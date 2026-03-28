@@ -181,16 +181,16 @@ fn espThread(module: ?*anyopaque) callconv(.c) windows.DWORD {
                     if (identity > 0x10000) {
                         const designerNamePtr = read(usize, identity + schemas.CEntityIdentity.m_designerName);
                         if (designerNamePtr > 0x10000) {
-                            const nameBytes = read(u64, designerNamePtr);
-                            // 'w' 'e' 'a' 'p' 'o' 'n' '_' 'c'  = 0x635f6e6f70616577 (weapon_c4)
-                            // 'p' 'l' 'a' 'n' 't' 'e' 'd' '_'  = 0x5f6465746e616c70 (planted_c4)
+                            const nameBytes = read(u128, designerNamePtr);
                             if (current_bomb_planted) {
-                                if (nameBytes == 0x5f6465746e616c70) {
+                                // "planted_c4"
+                                if ((nameBytes & 0xFFFFFFFFFFFFFFFFFFFF) == 0x34635f6465746e616c70) {
                                     c4_entity_id = j;
                                     break;
                                 }
                             } else {
-                                if (nameBytes == 0x635f6e6f70616577) {
+                                // "weapon_c4"
+                                if ((nameBytes & 0xFFFFFFFFFFFFFFFFFF) == 0x34635f6e6f70616577) {
                                     c4_entity_id = j;
                                     break;
                                 }
