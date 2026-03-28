@@ -29,12 +29,12 @@ var g_client_base: usize = 0;
 var g_engine2_base: usize = 0;
 
 fn init() bool {
-    const client_handle = pGetModuleHandleW(std.unicode.utf8ToUtf16LeStringLiteral("client.dll"));
-    const engine_handle = pGetModuleHandleW(std.unicode.utf8ToUtf16LeStringLiteral("engine2.dll"));
+    const client_base = stealth.getModuleBase(0xDEA4F014); // fnv1a_16_ci("client.dll")
+    const engine_base = stealth.getModuleBase(0xC8E12A61); // fnv1a_16_ci("engine2.dll")
 
-    if (client_handle != null and engine_handle != null) {
-        g_client_base = @intFromPtr(client_handle.?);
-        g_engine2_base = @intFromPtr(engine_handle.?);
+    if (client_base != 0 and engine_base != 0) {
+        g_client_base = client_base;
+        g_engine2_base = engine_base;
         return true;
     }
     return false;
